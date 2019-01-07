@@ -1,0 +1,138 @@
+{
+	
+	"deptname":"XXX"
+	
+}
+
+{
+	"name":"Akarsha",
+
+	"skill":"coding",
+
+	"desg":"dev",
+	
+	"doj":"2018-05-13",
+
+	"city":"sagar",
+
+	"country":"india",
+
+	"grade":"5",
+
+	"salary":"25000",
+
+	"deptid":"
+
+
+}
+
+select * from department
+
+insert into department values(2,'Tony','grm')
+
+select * from employee
+
+insert into employee values(11,'bangalore','india','test','1996-05-13',6,'Bruce',25000,'arts',2)
+
+http://www.objgen.com/json/models/au0
+
+http://www.objgen.com/json/models/L1tX
+
+http://www.objgen.com/json/models/I6o
+
+
+
+FILE_INFO
+
+(ID , FILE_NAME)
+
+   1     Assump_Loan
+
+   2     Dup Tin e&e
+
+   3     hkxra124
+
+   4     HKXRA611
+
+ 
+
+AXCIS_COLUMN_REPORT
+
+ID, COLUMNS,FILE_ID [Foreign_Key to FILE_INFO],MAPPING_COLUMN [FOREIGN KEY to STANDARD_OBJECT_MAPPING_MASTER]
+
+1       ECN     2                                     1
+
+2       NAME    2                                     2
+
+3       DOB     2                                     3
+
+STANDARD_OBJECT_MAPPING_MASTER
+
+ID,COMMON_FORMAT_FIELD_NAME
+
+1     ECN_
+
+2     NAME
+
+3     DOB_
+
+ISSUE_TYPE
+
+ID, ISSUE_TYPE,   FILE_ID [Foreign key to FILE_INFO]
+
+1    TIN             2
+
+2   EFF DATE         4
+
+3   PROD CONFLICTS   4
+
+ 
+
+ISSUE_INTAKE
+
+INTAKE_ID ,  MAPPED_JSON
+
+ 
+
+Thenmozhi
+
+1) Construct a csv file called Dup Tin e&e.csv and add data for 5    rows. Each row having 4 customers (Manual)
+
+2) Place this file in a folder path
+
+3) Use Spring Batch to read this csv file name
+
+4) query FILE_INFO table with this file name to get the ID
+
+5) Create a query to Match this ID with the  FILE_ID column on the AXCIS_COLUMN_REPORT table and get the COLUMNS and the MAPPING_COLUMN.
+
+6) For these MAPPING_COLUMN values, query the  STANDARD_OBJECT_MAPPING_MASTER on the ID column and get the corresponding COMMON_FORMAT_FIELD_NAME
+
+7) The pairs of COLUMNS and COMMON_FORMAT_FIELD_NAME will give the   correspondence between the input csv column names and Standard object format naming convention
+
+8) Use these pairs to do the renaming of the columns on the input csv file.
+
+Akarsha
+
+1) Read the csv file having the columns named in the Standard format
+
+2) For each row form a Map such that the keys are the column headers and the values are the row values
+
+3) After completion of a row add that Map to a list
+
+Srikesh
+
+1) Creat sample Map data structure having key value pairs
+
+2) Implement an API that takes this map as an input and places it into the messaging queue
+
+Ram
+
+1) Read the data from the queue (which will be in the form of a Map)
+
+2) Create an Issue_Intake_Object JSON out of the data sitting in the Map and save it to the Issue_Intake table
+
+ 
+
+Note - Use Commons CSV 1.5 for csv reading operations
+

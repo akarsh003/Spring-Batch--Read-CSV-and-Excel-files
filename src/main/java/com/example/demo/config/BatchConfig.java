@@ -99,20 +99,11 @@ public class BatchConfig {
 		
 	    return stepBuilderFactory.get("step1csv").<Map<String,Object>, Map<String,Object>>chunk(5)
 	            .reader(multiResourceItemReader())
-	            .writer(writer1())
+	            .writer(writer())
 	            .build();
 	}
 	
 	
-/*	@Bean
-	public Step step2excel() throws IOException, URISyntaxException {
-		
-		return stepBuilderFactory.get("step2excel").<Map<String,Object>, Map<String,Object>>chunk(5)
-	            .reader(multipleexcelfilesreader())
-//	            .reader(excelreader())
-	            .writer(writer1())
-	            .build();
-	}*/
 	
 	@Bean
     public Step partitionStep() throws UnexpectedInputException, ParseException, IOException, URISyntaxException {
@@ -133,21 +124,11 @@ public class BatchConfig {
 	        return stepBuilderFactory.get("slaveStep")
 	          .<Map<String,Object>, Map<String,Object>>chunk(1)
 	          .reader(excelreaderpll(null))
-	          .writer(writer1())
+	          .writer(writer())
 	          .build();
 	    }
 	
-	
-/*	@Bean
-	public MultiResourceItemReader<Map<String, Object>> multipleexcelfilesreader() throws IOException, URISyntaxException {
-		
-		MultiResourceItemReader<Map<String,Object>> resourceItemReader= new MultiResourceItemReader<Map<String,Object>>();
-	    resourceItemReader.setResources(inputResourcesexcel);
-	    
-	    resourceItemReader.setDelegate(excelreader());
 
-	    return resourceItemReader;
-	}*/
 	
 	@Bean
 	public MultiResourceItemReader<Map<String,Object>> multiResourceItemReader()
@@ -186,7 +167,7 @@ public class BatchConfig {
     }
 
 	@Bean
-    public ConsoleItemWriter<Map<String,Object>> writer1()
+    public ConsoleItemWriter<Map<String,Object>> writer()
     {
         return new ConsoleItemWriter<Map<String,Object>>();
     }
@@ -225,127 +206,6 @@ public class BatchConfig {
     }
 	
     
-    
-  //Listing files present in the directory	
-  	public static void listOfFiles() {
-  		
-          results = new ArrayList<String>();
-          File[] files = new File("E:\\STSWORKSPACE\\BatchCSV\\src\\main\\resources").listFiles();
-          for (File file : files) {
-              if (file.isFile()) {
-              	
-              	//Getting absolute path for the file and adding to list
-              	String x=file.getAbsolutePath();
-              	if(x.contains(".xlsx"))
-                  results.add(x);
-              	
-                  }
-              
-          }
-  	}
-      
-
-    
-    
-	//Old approach
-	
-	/*@Bean
-	public Step step() throws UnexpectedInputException, ParseException, Exception {
-		
-		
-		return stepBuilderFactory.get("step")
-				.<Map<String,Object>, Map<String,Object>>chunk(3)
-				.reader(excelStudentReader())
-                .processor(processor())
-                .writer(writer())
-				.build();
-	}*/
-  	
-  //Excel file reading	
-  	/*@Bean
-      public PoiItemReader<Map<String, Object>> excelreader() throws IOException, URISyntaxException{
-      	
-      	listOfFiles();
-        
-        for(int i=0;i<results.size();i++) {
-       	
-        	String path=(String) results.get(i);
-        	
-        	 f = new File(path);
-        	System.out.println(f.getName());
-        }
-
-      	
-      	
-  		PoiItemReader<Map<String, Object>> reader = new PoiItemReader<>();
-  		reader.setLinesToSkip(1);	
-
-//        reader.setResource(new ClassPathResource(inputResourcesexcel.toString()));
-//        reader.setResource(new ClassPathResource(new String(Files.readAllBytes(Paths.get(getClass().getResource(inputResourcesexcelstring).toURI())))));
-
-  		org.springframework.batch.item.excel.RowMapper<Map<String, Object>> mapper = excelRowMapper();
-          reader.setRowMapper(mapper);
-          reader.setStrict(false);
-          return reader;
-          
-      }*/
-	
-	/*public ItemWriter<? super Map<String, Object>> writer() {
-		
-		return new NoOpItemWriter();
-	
-	}*/
-	
-	/*@Bean
-    public CItemProcessor processor()
-    {
-     return new CItemProcessor();
-    }
-	
-	@Bean
-	public Job importUserJob() throws UnexpectedInputException, ParseException, Exception {
-		
-		return jobBuilderFactory.get("importUserJob").incrementer(new RunIdIncrementer()).flow(step()).end().build();
-	}*/
-	
-	/*@Bean
-    ItemReader<Map<String, Object>> excelStudentReader() throws UnexpectedInputException, ParseException, Exception {
-		
-		List list = listOfFiles();
-//        int size = list.size();
-        
-        for(int i=0;i<s;i++) {
-        	
-        	String path=(String) list.get(i);
-        	System.out.println(path);
-        	
-        	File f = new File(path);
-        	System.out.println(f.getName());
-        	
-        	
-        	if(path.contains(".csv")) {
-        		
-        		 	FlatFileItemReader<Map<String, Object>> reader = new FlatFileItemReader<>();
-        	        reader.setLinesToSkip(1);
-        	        DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
-        	        LineCallbackHandler skippedLinesCallback = new LineCallbackHandler() {
-        	        	@Override
-        				public void handleLine(String line) {
-        	        		String[] columnNames = tokenizer.tokenize(line).getValues();
-        	        		tokenizer.setNames(columnNames);
-        	        	}
-        	        };
-        			reader.setSkippedLinesCallback(skippedLinesCallback );
-        	        reader.setResource(new ClassPathResource(f.getName()));
-
-        	        DefaultLineMapper<Map<String, Object>> mapper = excelRowMapper(tokenizer);
-        	        reader.setLineMapper(mapper);
-        	        reader.setStrict(true);
-        	        return reader;
-        		
-        		
-        	}else if(path.contains(".xlsx")) {
-        		*/
-
-	}
+  
+}
 	
