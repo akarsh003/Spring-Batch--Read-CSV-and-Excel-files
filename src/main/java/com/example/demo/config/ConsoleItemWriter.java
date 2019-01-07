@@ -8,6 +8,8 @@ public class ConsoleItemWriter<T> implements ItemWriter<T> {
     @Override
     public void write(List<? extends T> items) throws Exception {
         for (T item : items) {
+        	
+        	//API call
             System.out.println("Displaying Map:"+ item);
         }
     }
