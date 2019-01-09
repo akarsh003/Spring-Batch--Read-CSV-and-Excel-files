@@ -44,9 +44,6 @@ public class BatchConfig {
 
 	@Autowired
 	private StepBuilderFactory stepBuilderFactory;
-	
-	private static List<String> results;
-	private File f;
 
 	@Value("*.xlsx")
 	private Resource[] inputResourcesexcel;
@@ -64,10 +61,14 @@ public class BatchConfig {
         FlatFileItemReader<Map<String, Object>> reader = new FlatFileItemReader<>();
         reader.setLinesToSkip(1);
         DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
+
         LineCallbackHandler skippedLinesCallback = new LineCallbackHandler() {
         	@Override
 			public void handleLine(String line) {
         		String[] columnNames = tokenizer.tokenize(line).getValues();
+        		for(String nam:columnNames) {
+        			System.out.println(nam);
+        		}
         		tokenizer.setNames(columnNames);
         	}
         };
