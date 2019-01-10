@@ -31,7 +31,7 @@ public class BatchCsvApplication {
 		SpringApplication.run(BatchCsvApplication.class, args);
         }
 	
-	@Scheduled(cron = "0 * * * * ?")
+	@Scheduled(cron = "0/10 * * * * ?")
     public void perform() throws Exception
     {
         JobParameters params = new JobParametersBuilder()

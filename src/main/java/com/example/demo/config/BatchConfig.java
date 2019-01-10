@@ -2,6 +2,7 @@ package com.example.demo.config;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,8 +48,10 @@ public class BatchConfig {
 
 	@Value("*.xlsx")
 	private Resource[] inputResourcesexcel;
-
 	
+	@Value("*.xlsx")
+	private URI inputResourcesexcelstring;
+
 	@Value("*.csv")
 	private Resource[] inputResourcescsv;
 	
@@ -90,6 +93,7 @@ public class BatchConfig {
 	            .start(step1csv())
 //	            .next(step2excel())
 	            .next(partitionStep())
+//	            .next(slaveStep())
 	            .build());
 				
 			}
@@ -118,8 +122,8 @@ public class BatchConfig {
 		
     }
 	
-	  @Bean
-	    public Step slaveStep() throws UnexpectedInputException, ParseException, IOException, URISyntaxException {
+   @Bean
+	public Step slaveStep() throws UnexpectedInputException, ParseException, IOException, URISyntaxException {
 	    	
 	    	
 	        return stepBuilderFactory.get("slaveStep")
@@ -143,7 +147,7 @@ public class BatchConfig {
 	}
 	
 
-    @Bean
+   @Bean
     public MultiResourcePartitioner partitioner() throws IOException {
     	
     	 MultiResourcePartitioner partitioner = new MultiResourcePartitioner();
@@ -152,6 +156,9 @@ public class BatchConfig {
     	 
     	 partitioner.setResources(resolver.getResources("*.xlsx"));
     	 
+    	 
+    	 
+    	 
     	 return partitioner;
 
     }
@@ -159,12 +166,14 @@ public class BatchConfig {
 	
 	@Bean
     public TaskExecutor taskExecutor() {
+		
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
         taskExecutor.setMaxPoolSize(5);
         taskExecutor.setCorePoolSize(5);
         taskExecutor.setQueueCapacity(5);
         taskExecutor.afterPropertiesSet();
         return taskExecutor;
+        
     }
 
 	@Bean
@@ -195,7 +204,7 @@ public class BatchConfig {
     @Bean
     @StepScope
     public PoiItemReader<Map<String, Object>> excelreaderpll(@Value("#{stepExecutionContext['fileName']}") String filename) throws IOException, URISyntaxException{
-    	 	
+	
 		PoiItemReader<Map<String, Object>> reader = new PoiItemReader<>();
 		reader.setLinesToSkip(1);	
          reader.setResource(new UrlResource(filename));
