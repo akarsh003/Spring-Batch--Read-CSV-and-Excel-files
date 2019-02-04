@@ -3,7 +3,9 @@ package com.example.demo;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+//import org.hibernate.annotations.common.util.impl.Log_.logger;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -16,7 +18,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 @SpringBootApplication
 @EnableScheduling
-
 public class BatchCsvApplication {
 
 	
@@ -27,8 +28,8 @@ public class BatchCsvApplication {
     Job job;
     
 	public static void main(String[] args) {
-		
 		SpringApplication.run(BatchCsvApplication.class, args);
+
         }
 	
 	@Scheduled(cron = "0/10 * * * * ?")
