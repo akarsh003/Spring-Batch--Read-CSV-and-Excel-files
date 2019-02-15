@@ -34,47 +34,9 @@ public class ItemProc<T> implements ItemProcessor<T,T> {
 		// TODO Auto-generated method stub
 	
 	        	
-	        	//API call 
+	        	//API call for validation can be done here
 
-	        	HashMap<String,Object> item1=(HashMap<String, Object>)item;
-	        	item1.put("WorkRequestType","TinDuplication");
-	        	list.add((HashMap<String,Object>)item1);
-	        
 
-//	    	Calling Validation API for List of hashmaps
-
-	    	System.out.println("Calling Validation in processor "+i);
-	    	i++;
-//	    	restTemplate = new RestTemplate();
-//	    	String postUrl = "http://localhost:8080/processList";
-//	    	ResponseEntity<String> postResponse = restTemplate.postForEntity(postUrl, list, String.class);
-//	    	ControllerClass c=new ControllerClass();
-//	    	controllerClass.processIssueIntakeList(list);
-	    	IssueIntakeResponse e= controllerClass.processIssueIntake(item1);
-//	    	IssueIntakeResponse er=e.get(0);
-//	    	System.out.println(e.get(0).getErrors()[0].getAttributeName());
-//	    	System.out.println(e.size());
-	    	
-
-	    	//for(IssueIntakeResponse s:e) {
-	    		
-	    		if(e.getErrors()[0].equals(null))
-	    	{
-	    		System.out.println("no error");
-	    		
-	    	}else
-	    	{
-	    		System.out.println("error "+counterrors++);;
-	    	}
-	    	
-	    	if(counterrors>=50) {
-	    		//Throw exception if 50 errors is reached
-	    		System.out.println("50 Erros found");
-	    		counterrors=0;
-	    		throw new InvalidOrderItemException("50 Errors");
-	    	}
-	    	
-//	System.out.println("Response for Post Request: " + postResponse.getBody());
 		return item;
 	}
 

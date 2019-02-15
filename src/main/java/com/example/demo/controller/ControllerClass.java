@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.transaction.Transactional;
 
@@ -38,13 +39,16 @@ public class ControllerClass {
 
 	@RequestMapping(value = "/processList", method = RequestMethod.POST)
 	public List<IssueIntakeResponse> processIssueIntakeList(@RequestBody List<HashMap<String,Object>> hmlist) throws InvalidOrderItemException {
+		
 		List<IssueIntakeResponse> iirList=new ArrayList<>();
 		List<Issue_Intake> listallForSaving=new ArrayList<>();
+		
 		for (HashMap<String,Object> hm:hmlist) {
-			IssueIntakeResponse iir1=processIssueIntake(hm);
-			iirList.add(iir1);
+			
+			//IssueIntakeResponse iir1=processIssueIntake(hm);
+			//iirList.add(iir1);
 			//aggregate list...
-			listallForSaving.add(new Issue_Intake(iir1.getReferenceId(),toJson(hm)));
+			//listallForSaving.add(new Issue_Intake(iir1.getReferenceId(),toJson(hm)));
 			
 			/*Errors[] tt=iir1.getErrors();
 //			int x=tt.length;
@@ -94,30 +98,42 @@ public class ControllerClass {
 		//
 		return iirList;
 	}
+	
+	Object object=new Object();
+	
 	@RequestMapping(value = "/processAndSaveList", method = RequestMethod.POST)
 	//@Transactional(rollbackOn:(errorCount==50))
-	public List<IssueIntakeResponse> processIssueIntakeListPersist(@RequestBody List<HashMap<String,Object>> hmlist) {
-		List<IssueIntakeResponse> iirList=new ArrayList<>();
+	
+	public   List<IssueIntakeResponse> processIssueIntakeListPersist(@RequestBody List<HashMap<String,Object>> hmlist,java.util.UUID uuid) {
+		
+		List<IssueIntakeResponse> iirList=new CopyOnWriteArrayList<>();
 		List<Issue_Intake> listallForSaving=new ArrayList<>();
+	synchronized(object){
+			
 		for (HashMap<String,Object> hm:hmlist) {
-			IssueIntakeResponse iir1=processIssueIntake(hm);
+			
+			IssueIntakeResponse iir1=processIssueIntake(hm,uuid);
 			iirList.add(iir1);//for responce to postman
 
-			listallForSaving.add(new Issue_Intake(iir1.getReferenceId(),toJson(hm)));
+			listallForSaving.add(new Issue_Intake(iir1.getReferenceId(),toJson(hm),uuid));
 		}
+}
 		//save and return
 		issueIntakeRepo.saveAll(listallForSaving);
 		return iirList;
 	}
-	@RequestMapping(value = "/processAndSave", method = RequestMethod.POST)
+	
+	
+	
+	/*@RequestMapping(value = "/processAndSave", method = RequestMethod.POST)
 	public IssueIntakeResponse processIssueIntakePersist(@RequestBody HashMap<String,Object> hm) {
 		IssueIntakeResponse iir=processIssueIntake(hm);
 //		saveIt(validatedHashMap,referenceId);
 		saveIt(hm,iir.getReferenceId());
 		return iir;
-	}
+	}*/
 	@RequestMapping(value = "/process", method = RequestMethod.POST)
-	public IssueIntakeResponse processIssueIntake(@RequestBody HashMap<String,Object> hm) {
+	public IssueIntakeResponse processIssueIntake(@RequestBody HashMap<String,Object> hm,java.util.UUID uuid) {
 		//TODO: Generate better unique id
 		String referenceId = String.valueOf(System.currentTimeMillis());
 		//extract wR type from hash map received.
@@ -146,11 +162,11 @@ public class ControllerClass {
 
 
 
-	public void saveIt(HashMap validatedHashMap,String referenceId){
+	public void saveIt(HashMap validatedHashMap,String referenceId,java.util.UUID uuid){
 		//// mapped json persist
 		String mapAsJson=toJson(validatedHashMap);
 		//TODO:DONE!! persist to DB here!! SENDER who will persist in DB
-		issueIntakeRepo.save(new Issue_Intake(referenceId,mapAsJson));
+		issueIntakeRepo.save(new Issue_Intake(referenceId,mapAsJson,uuid));
 		//below code to convert from json to map.RECEIVER SIDE
 		/*JSONParser parser = new JSONParser();
 		try {
