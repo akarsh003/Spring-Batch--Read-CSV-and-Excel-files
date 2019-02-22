@@ -52,10 +52,10 @@ public class BatchConfig {
 
 	private java.util.UUID uuid=null;
 
-	private ControlTable ct=new ControlTable();
+	private ControlTable Control_Table=new ControlTable();
 
 	@Autowired
-	private ControlTableRepo ctrepo;
+	private ControlTableRepo Control_Table_Repository;
 	
 	@Autowired
 	private JobBuilderFactory jobBuilderFactory;
@@ -238,15 +238,16 @@ public class BatchConfig {
 		UUID refid=uuid;
 //		System.out.println("File started: "+refid+"\nThread: "+Thread.currentThread().getName()+"\n "+filename);
 		
-		ct.setUUID(refid);
-		ct.setFilename(filename);
-		ct.setstatus("Reading Started: ");
-		ctrepo.save(ct);
+		Control_Table.setUUID(refid);
+		Control_Table.setFilename(filename);
+		Control_Table.setstatus("Reading Started: ");
+		Control_Table_Repository.save(Control_Table);
 		
         FlatFileItemReader<Map<String, Object>> reader = new FlatFileItemReader<>();
         reader.setLinesToSkip(1);
         DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
 
+        
         LineCallbackHandler skippedLinesCallback = new LineCallbackHandler() {
         	@Override
 			public void handleLine(String line) {
@@ -263,8 +264,8 @@ public class BatchConfig {
         reader.setStrict(true);
         
 //		System.out.println("File read done: "+refid+"\nThread: "+Thread.currentThread().getName());
-		ct.setstatus("Read Complete and yet to be written");
-		ctrepo.save(ct);
+        Control_Table.setstatus("Read Complete and yet to be written");
+        Control_Table_Repository.save(Control_Table);
         
         return reader;
     }
