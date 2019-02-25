@@ -27,26 +27,23 @@ public class ConsoleItemWriter<T> implements ItemWriter<T> {
 	
 		
 	@Autowired
-	ControlTableRepo Control_Table_Repository;
+	ControlTableRepo controlTableRepository;
 	
-	private ControlTable Control_Table=new ControlTable();
+	private ControlTable controlTable=new ControlTable();
 
 	
 	@Autowired
-	ControllerClass controllerclass;
+	ControllerClass controllerClass;
 	
-	int NumberOfErrors=0;
+	private int numberOfErrors=0;
 	
-	private String filename;
+	private String fileName;
 	
 	List<HashMap<String,Object>> list=new ArrayList<HashMap<String, Object>>();
 	
 	@Autowired
-	private IssueIntakeRepo IssueIntake_Repository;
+	private IssueIntakeRepo issueIntakeRepository;
 	
-	Object object=new Object();
-
-
 
 	public ConsoleItemWriter() {
 		// TODO Auto-generated constructor stub
@@ -55,7 +52,7 @@ public class ConsoleItemWriter<T> implements ItemWriter<T> {
 
 	public ConsoleItemWriter(String pathToDFile) {
 		// TODO Auto-generated constructor stub
-		filename=pathToDFile;
+		fileName=pathToDFile;
 	}
 
 	@Override	
@@ -84,13 +81,13 @@ public class ConsoleItemWriter<T> implements ItemWriter<T> {
 //    	String postUrl = "http://localhost:8080/process";
 //    	ResponseEntity<String> postResponse = restTemplate.postForEntity(postUrl, list, String.class);
         
-		ControlTable File_Details_Object=Control_Table_Repository.findByfilename(filename);
+		ControlTable File_Details_Object=controlTableRepository.findByfilename(fileName);
 
-        List<com.example.demo.controller.IssueIntakeResponse>  Validation_Response=controllerclass.processIssueIntakeListPersist(list,File_Details_Object.getUUID());
+        List<com.example.demo.controller.IssueIntakeResponse>  validationResponse=controllerClass.processIssueIntakeListPersist(list,File_Details_Object.getUUID());
         
-        for(com.example.demo.controller.IssueIntakeResponse s:Validation_Response) {
+        for(com.example.demo.controller.IssueIntakeResponse iterator:validationResponse) {
         	
-           com.example.demo.controller.Errors[] Error_Array=s.getErrors();
+           com.example.demo.controller.Errors[] errorArray=iterator.getErrors();
 //        List<com.example.demo.service.intake.IssueIntakeResponse> e= intakeservice.processIssueIntakeListPersist(list);
         
 //        for(com.example.demo.service.intake.IssueIntakeResponse s:e) {
@@ -98,33 +95,32 @@ public class ConsoleItemWriter<T> implements ItemWriter<T> {
 		
 
         
-          if(Error_Array==null) {
+          if(errorArray==null) {
 			
         	   continue;
 			
            }else {
 			
-        	   Control_Table=Control_Table_Repository.findByfilename(filename);
-        	   Control_Table.setstatus("ERROR");
-				Control_Table_Repository.save(Control_Table);
-				NumberOfErrors++;
+        	   controlTable=controlTableRepository.findByfilename(fileName);
+        	   controlTable.setstatus("ERROR");
+				controlTableRepository.save(controlTable);
+				numberOfErrors++;
 //				throw new InvalidOrderItemException("50 Errors");
 //				 ct=Control_Table_Repository.findByfilename(filename);
+				System.out.println(fileName);
+				System.out.println(controlTable.getstatus());
 				
-				System.out.println(filename);
-				System.out.println(Control_Table.getstatus());
+				if(controlTable.getstatus().equals("ERROR")) {
 				
-				if(Control_Table.getstatus().equals("ERROR")) {
-				
-					System.out.println("Records for this file will be deleted: "+filename);
+					System.out.println("Records for this file will be deleted: "+fileName);
 
-					IssueIntake_Repository.deleteByUuid(Control_Table.getUUID());
+					issueIntakeRepository.deleteByUuid(controlTable.getUUID());
 				
 				}
 			
-				System.out.println("Error count "+NumberOfErrors);
+				System.out.println("Error count "+numberOfErrors);
 				
-				if(NumberOfErrors==50) {
+				if(numberOfErrors==50) {
 					
 					
 					throw new InvalidOrderItemException("50 Errors Found and stop the batch");	

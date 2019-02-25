@@ -12,6 +12,19 @@ import com.example.demo.BatchPojo.ControlTableRepo;
 
 public class ItemWriterExecutionListner implements ItemWriteListener<Object> {
 
+	
+	private ControlTable controlTable=new ControlTable();
+	private String fileName;
+	
+	public ItemWriterExecutionListner(String fileName) {
+//		super();
+		this.fileName = fileName;
+	}
+
+	@Autowired
+	private ControlTableRepo controlTableRepository;
+	
+	
 
 	@Override
 	public void beforeWrite(List<? extends Object> items) {
@@ -22,6 +35,17 @@ public class ItemWriterExecutionListner implements ItemWriteListener<Object> {
 	@Override
 	public void afterWrite(List<? extends Object> items) {
 		// TODO Auto-generated method stub
+		
+ 	   controlTable=controlTableRepository.findByfilename(fileName);
+ 	   
+ 	   if(controlTable.getstatus().equals("ERROR")) {
+ 		   //Do not change status
+ 	   }else {
+ 		   controlTable.setstatus("Write Complete");
+ 		   controlTableRepository.save(controlTable);
+ 	   }
+		
+		
 	}
 
 	@Override

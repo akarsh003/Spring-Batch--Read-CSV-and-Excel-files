@@ -52,10 +52,10 @@ public class BatchConfig {
 
 	private java.util.UUID uuid=null;
 
-	private ControlTable Control_Table=new ControlTable();
+	private ControlTable controlTable=new ControlTable();
 
 	@Autowired
-	private ControlTableRepo Control_Table_Repository;
+	private ControlTableRepo controlTableRepository;
 	
 	@Autowired
 	private JobBuilderFactory jobBuilderFactory;
@@ -65,7 +65,7 @@ public class BatchConfig {
 
 
 	@Bean
-	public JobCompletionNotificationListener JobExecutionListener() {
+	public JobCompletionNotificationListener jobExecutionListener() {
 		
 		return new JobCompletionNotificationListener();
 		
@@ -73,10 +73,10 @@ public class BatchConfig {
 	  
 	@Bean
 	@StepScope
-	public StepExecutionNotificationListener StepExecutionListener(@Value("#{stepExecutionContext['fileName']}") String filename) {
+	public StepExecutionNotificationListener stepExecutionListener(@Value("#{stepExecutionContext['fileName']}") String fileName) {
 
 		
-		return new StepExecutionNotificationListener(/*filename*/);
+		return new StepExecutionNotificationListener(/*fileName*/);
 		
 	}
 	
@@ -94,7 +94,7 @@ public class BatchConfig {
 	@StepScope
 	public ItemWriterExecutionListner ItemWriterListener(@Value("#{stepExecutionContext['fileName']}") String filename) {
 		
-		return new ItemWriterExecutionListner(/*filename*/);
+		return new ItemWriterExecutionListner(filename);
 	}
 	
 	
@@ -140,7 +140,7 @@ public class BatchConfig {
 	  	          .listener(ItemWriterListener(null))
 	  	          .taskExecutor(MultiTaskExecutor())
 //	  	          .listener(ChunkListener())
-	  	          .listener(StepExecutionListener(null))
+	  	          .listener(stepExecutionListener(null))
 
 	  	          .build();
 	  	        
@@ -174,7 +174,7 @@ public class BatchConfig {
   	          .listener(ItemWriterListener(null))
   	          .taskExecutor(MultiTaskExecutor())
 //  	          .listener(ChunkListener())
-  	          .listener(StepExecutionListener(null))
+  	          .listener(stepExecutionListener(null))
 
   	          .build();
 	}
@@ -238,12 +238,13 @@ public class BatchConfig {
 		UUID refid=uuid;
 //		System.out.println("File started: "+refid+"\nThread: "+Thread.currentThread().getName()+"\n "+filename);
 		
-		Control_Table.setUUID(refid);
-		Control_Table.setFilename(filename);
-		Control_Table.setstatus("Reading Started: ");
-		Control_Table_Repository.save(Control_Table);
+		controlTable.setUUID(refid);
+		controlTable.setFilename(filename);
+		controlTable.setstatus("Reading Started: ");
+		controlTableRepository.save(controlTable);
 		
         FlatFileItemReader<Map<String, Object>> reader = new FlatFileItemReader<>();
+        
         reader.setLinesToSkip(1);
         DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
 
@@ -264,8 +265,8 @@ public class BatchConfig {
         reader.setStrict(true);
         
 //		System.out.println("File read done: "+refid+"\nThread: "+Thread.currentThread().getName());
-        Control_Table.setstatus("Read Complete and yet to be written");
-        Control_Table_Repository.save(Control_Table);
+        controlTable.setstatus("Read Complete and yet to be written");
+        controlTableRepository.save(controlTable);
         
         return reader;
     }
